@@ -1,0 +1,21 @@
+* IPv6Auth
+** Overview
+   This script can recognize the validcode in the IPv6 authentication
+   webpage and then automatically log in. 
+
+   Note: It runs under Python 2.7 and is only applicable when
+   accessing IPv6 service in *Tsinghua University*.
+
+** Get Started
+   Just run in terminal:
+   : python IPv6Auth.py
+
+   Damn the authentication webpage!!!
+
+** Things To Do
+   - Change the way to store user information. It should be both
+     secure and user-friendly.
+
+** Note
+   This a refactoring version of a previous working version.
+
