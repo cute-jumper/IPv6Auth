@@ -18,6 +18,7 @@ class IPv6Auth(object):
         cookies = urllib2.HTTPCookieProcessor()
         opener = urllib2.build_opener(cookies)
         urllib2.install_opener(opener)
+        self.username, self.password = self.get_username_and_password()
 
     def get_username_and_password(self):
         # get username and password, if user exists, use the name and password in it
@@ -40,10 +41,10 @@ class IPv6Auth(object):
         return username, password
 
     def get_code_string(self):        
-        image_data = StringIO.StringIO()
-        image_data.write(urllib2.urlopen("https://auth-1.ccert.edu.cn:8443/eportal/validcode").read()) # Get validcode
+        # image_data = StringIO.StringIO()
+        # image_data.write(urllib2.urlopen("https://auth-1.ccert.edu.cn:8443/eportal/validcode").read()) # Get validcode
         # read the code, convert into two-valued string
-        img = Image.open(image_data)
+        img = Image.open(StringIO.StringIO(urllib2.urlopen("https://auth-1.ccert.edu.cn:8443/eportal/validcode").read()))
         newimg = img.convert('L')
         twoval = []
         code_string = ["", "", "", ""]
@@ -55,24 +56,24 @@ class IPv6Auth(object):
                 twoval.append(255)
                 code_string[cnt % 60 / 15] += '0'
         newimg.putdata(twoval)
-        image_data.close()
+        # image_data.close()
         return code_string
     
     # remove useless pixels
-    def chop(self, s):
+    def chop(self, input_string):
         l, r, t, b = 14, 0, 19, 0
-        for cnt, i in enumerate(s):
+        for cnt, i in enumerate(input_string):
             x, y = cnt % 15, cnt / 15
             if i == '1':
                 if x > r: r = x
                 if x < l: l = x;
                 if y > b: b = y
                 if y < t: t = y
-        s = ""
+        ret = ""
         for i in range(t, b + 1):
             for j in range(l, r + 1):
-                s += string[i * 15 + j]
-        return s
+                ret += input_string[i * 15 + j]
+        return ret
     
     def get_recognition(self, code_string):
         numbers = ['001110001101100100010110001111000111100011110001111000111100011010001001101100011100',
